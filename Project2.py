@@ -33,14 +33,7 @@ def get_titles_from_search_results(filename):
         name_lst.append(url.strip())
     for i in range(len(book_lst)):
         lst.append((book_lst[i], name_lst[i]))
-
-    
     return lst
-
-
-    
-    
-
 
 def get_search_links():
     """
@@ -55,8 +48,22 @@ def get_search_links():
     “https://www.goodreads.com/book/show/kdkd".
 
     """
+    base = "https://www.goodreads.com"
+    lst = []
+    try:
+        url = "https://www.goodreads.com/search?q=fantasy&qid=NwUsLiA2Nc"
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+    except:
+        return "Error"
 
-    pass
+    table = soup.find('table')
+    urls = table.find_all('a', class_= 'bookTitle')
+    for url in urls:
+        lst.append(base+url.get('href'))
+
+    
+    
 
 
 def get_book_summary(book_url):
@@ -154,7 +161,7 @@ class TestCases(unittest.TestCase):
             self.assertEqual(type(url), type('hello'))
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
             #lst = re.findall('')
-        pass
+        
 
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
