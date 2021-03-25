@@ -14,8 +14,32 @@ def get_titles_from_search_results(filename):
 
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
+    book_lst = []
+    name_lst = []
+    lst = []
+    source_dir = os.path.dirname(__file__)
+    full_path = os.path.join(source_dir, filename)
+    file = open(full_path,'r')
+    soup = BeautifulSoup(file, 'html.parser')
+    file.close()
+    table = soup.find('table', class_= "tableList")
+    titles = table.find_all('a', class_= 'bookTitle')
+    authors = table.find_all('span', itemtype= "http://schema.org/Person")
+    for title in titles:
+        url = title.text
+        book_lst.append(url.strip())
+    for author in authors:
+        url = author.text
+        name_lst.append(url.strip())
+    for i in range(len(book_lst)):
+        lst.append((book_lst[i], name_lst[i]))
 
-    pass
+    
+    return lst
+
+
+    
+    
 
 
 def get_search_links():
@@ -101,30 +125,36 @@ def extra_credit(filepath):
 class TestCases(unittest.TestCase):
 
     # call get_search_links() and save it to a static variable: search_urls
-
+    search_urls = get_search_links()
 
     def test_get_titles_from_search_results(self):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
-
+        titles = get_titles_from_search_results("search_results.htm")
         # check that the number of titles extracted is correct (20 titles)
-
+        self.assertEqual(len(titles), 20)
         # check that the variable you saved after calling the function is a list
-
+        self.assertEqual(type(titles), type([]))
         # check that each item in the list is a tuple
-
+        for title in titles:
+            self.assertEqual(type(title),type((2,2)))
         # check that the first book and author tuple is correct (open search_results.htm and find it)
-
+        self.assertEqual(titles[0],("Harry Potter and the Deathly Hallows (Harry Potter, #7)", "J.K. Rowling"))
         # check that the last title is correct (open search_results.htm and find it)
+        self.assertEqual(titles[-1],("Harry Potter: The Prequel (Harry Potter, #0.5)","J.K. Rowling"))
 
     def test_get_search_links(self):
+        var = TestCases.search_urls
         # check that TestCases.search_urls is a list
-
+        self.assertEqual(type(var), type([]))
         # check that the length of TestCases.search_urls is correct (10 URLs)
-
+        self.assertEqual(len(var), 10)
 
         # check that each URL in the TestCases.search_urls is a string
+        for url in var:
+            self.assertEqual(type(url), type('hello'))
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
-
+            #lst = re.findall('')
+        pass
 
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
@@ -141,7 +171,7 @@ class TestCases(unittest.TestCase):
             # check that the third element in the tuple, i.e. pages is an int
 
             # check that the first book in the search has 337 pages
-
+        pass
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
@@ -155,7 +185,7 @@ class TestCases(unittest.TestCase):
         # check that the first tuple is made up of the following 3 strings:'Fiction', "The Midnight Library", 'https://www.goodreads.com/choiceawards/best-fiction-books-2020'
 
         # check that the last tuple is made up of the following 3 strings: 'Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'
-
+        pass
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
@@ -172,7 +202,7 @@ class TestCases(unittest.TestCase):
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
 
         # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
-
+        pass
 
 
 if __name__ == '__main__':
