@@ -155,10 +155,6 @@ def write_csv(data, filename):
         for i in data:
             file.writerow([i[0], i[1]])
             
-            
- 
-
-
 def extra_credit(filepath):
     """
     EXTRA CREDIT
@@ -166,7 +162,17 @@ def extra_credit(filepath):
     Please see the instructions document for more information on how to complete this function.
     You do not have to write test cases for this function.
     """
-    pass
+    r = requests.get(filepath)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    word_tags = soup.find_all('div')
+    lst =[]
+    first = "[A-Z][a-zA-Z]{2,12} [A-Z][a-zA-Z]+"
+    for div in word_tags:
+        names = re.findall(first,div.text)
+        lst.append(names)
+    
+    return lst
+        
 
 class TestCases(unittest.TestCase):
 
@@ -177,19 +183,19 @@ class TestCases(unittest.TestCase):
 
     def test_get_titles_from_search_results(self):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
-        self.titles = get_titles_from_search_results("search_results.htm")
+        titles = get_titles_from_search_results("search_results.htm")
 
         # check that the number of titles extracted is correct (20 titles)
-        self.assertEqual(len(self.titles), 20)
+        self.assertEqual(len(titles), 20)
         # check that the variable you saved after calling the function is a list
-        self.assertEqual(type(self.titles), type([]))
+        self.assertEqual(type(titles), type([]))
         # check that each item in the list is a tuple
-        for title in self.titles:
+        for title in titles:
             self.assertEqual(type(title),type((2,2)))
         # check that the first book and author tuple is correct (open search_results.htm and find it)
-        self.assertEqual(self.titles[0],("Harry Potter and the Deathly Hallows (Harry Potter, #7)", "J.K. Rowling"))
+        self.assertEqual(titles[0],("Harry Potter and the Deathly Hallows (Harry Potter, #7)", "J.K. Rowling"))
         # check that the last title is correct (open search_results.htm and find it)
-        self.assertEqual(self.titles[-1],("Harry Potter: The Prequel (Harry Potter, #0.5)","J.K. Rowling"))
+        self.assertEqual(titles[-1],("Harry Potter: The Prequel (Harry Potter, #0.5)","J.K. Rowling"))
 
     def test_get_search_links(self):
         var = self.search_urls
@@ -244,7 +250,6 @@ class TestCases(unittest.TestCase):
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
         data = get_titles_from_search_results("search_results.htm")
-        print(data)
         filename = "test.csv"
         write_csv(data,filename)
         # call write csv on the variable you saved and 'test.csv'
@@ -268,7 +273,11 @@ class TestCases(unittest.TestCase):
         self.assertEqual(csv_lines[1],['Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'])
         # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
         self.assertEqual(csv_lines[-1], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'])
-        
+
+    def test_extra(self):
+        url = "https://www.goodreads.com/book/show/54303298-rogue-planet"
+        ans = extra_credit(url)
+        print(ans)
 
 
 if __name__ == '__main__':
