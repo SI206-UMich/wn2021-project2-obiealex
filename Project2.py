@@ -1,10 +1,14 @@
+#Alexander Reynolds
+#UMID: 62951965
+#Date: 4/1/2021
+#Team members: N/A
+
 from bs4 import BeautifulSoup
 import requests
 import re
 import os
 import csv
 import unittest
-
 
 def get_titles_from_search_results(filename):
     """
@@ -277,7 +281,7 @@ class TestCases(unittest.TestCase):
     def test_extra(self):
         url = "https://www.goodreads.com/book/show/54303298-rogue-planet"
         ans = extra_credit(url)
-        print(ans)
+
 
 
 if __name__ == '__main__':
